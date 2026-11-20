@@ -135,6 +135,8 @@ export class AudioEngine {
   private pending: Pattern | null = null;
   /** Recently scheduled steps, for the playhead and live recording. */
   private scheduled: { step: number; time: number }[] = [];
+  /** Bumped on every stop so late UI callbacks from the previous run are ignored. */
+  private runId = 0;
   /** Called (on the UI thread, roughly in time with the audio) when a step plays. */
   onStep?: (step: number) => void;
 
@@ -256,7 +258,11 @@ export class AudioEngine {
     if (this.scheduled.length > 16) this.scheduled.shift();
     const ctx = this.ctx!;
     const delay = Math.max(0, (time - ctx.currentTime) * 1000);
-    setTimeout(() => this.onStep?.(step), delay);
+    // Steps are scheduled ahead of time; drop the UI callback if Stop came in between.
+    const run = this.runId;
+    setTimeout(() => {
+      if (run === this.runId && this.running) this.onStep?.(step);
+    }, delay);
   }
 
   /** Called when a queued pattern takes over at the loop start. */
@@ -284,6 +290,7 @@ export class AudioEngine {
 
   stop(): void {
     this.clock?.stop();
+    this.runId++;
     if (this.pending) {
       this.state.pattern = this.pending;
       this.pending = null;
