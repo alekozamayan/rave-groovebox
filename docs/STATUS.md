@@ -4,8 +4,11 @@ Read this first (`/resume`). Update it at the end of every session.
 
 ## Current state (2026-11-20)
 
-- **v0.1.0 built, not released yet.** It's on branch `claude/groovebox-synth-sampler-32dori`, the first
-  push to the new repo. No `main` branch, CI run or Pages deploy yet.
+- **v0.1.0 tag exists, but its deploy failed:** the iPhone e2e test "play … playhead" caught late
+  playhead updates after Stop. That's fixed in **0.1.1** (engine `runId` drops queued UI step callbacks
+  after Stop). `main` exists (created from the first commit). The user releases from a phone via
+  **Releases → Draft a new release → new tag on publish, target `main`**.
+- GitHub setup done by the user: Pages source = GitHub Actions, and a `v*.*.*` tag rule on `github-pages`.
 - Spun off from the kkey project (makam keyboard). Copied from it: the PWA setup, audio unlock,
   look-ahead clock pattern, multi-touch keyboard, CI/deploy workflows and the screenshot/icon scripts.
 - Tests: 99 unit tests and 9 e2e specs. Chromium passes locally; webkit and iphone are left to CI.
@@ -41,10 +44,9 @@ Read this first (`/resume`). Update it at the end of every session.
 - Cloud sandbox: it can push only `claude/*` branches. Tag pushes get HTTP 403, so the user pushes
   release tags locally. WebKit isn't downloadable there, so e2e runs with `--project=chromium`.
   `@playwright/test` is pinned to 1.63.0 to match the preinstalled Chromium.
-- **One-time GitHub setup (user):**
-  1. Create `main` (e.g. merge or rename the first branch) and make it the default branch.
-  2. Settings → Pages → Source: "GitHub Actions".
-  3. Allow `v*.*.*` tags in the `github-pages` environment.
+- The user often works from a phone: the GitHub app can't create tags. Use the browser's Releases page
+  (a release publishes its tag, and that triggers `deploy.yml`). A draft release creates no tag.
+- Check that the default branch is `main` (it started as the first pushed `claude/*` branch).
 
 ## Roadmap
 

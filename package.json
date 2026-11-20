@@ -1,7 +1,7 @@
 {
   "name": "rave-groovebox",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Browser groovebox (PWA): acid/FM/supersaw synths, 909-style drums, step sequencer, rave loops and punch-in FX",
   "type": "module",
   "license": "MIT",
